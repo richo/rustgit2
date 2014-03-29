@@ -1,4 +1,4 @@
-use std::libc::{c_void,c_char};
+use std::libc::{c_void,c_char,c_int};
 use std::mem;
 use std::c_str::CString;
 
@@ -31,7 +31,7 @@ impl Repository {
 
 #[link(name="git2")]
 extern {
-    fn git_repository_open(repo: **mut c_void, path: &str) -> u8;
+    fn git_repository_open(repo: **mut c_void, path: &str) -> c_int;
     // TODO This pointer is passed in effectively as const
     fn git_repository_path(repo: *mut c_void) -> *c_char;
 }
