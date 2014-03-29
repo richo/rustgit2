@@ -53,7 +53,7 @@ impl Repository {
     }
 }
 
-extern "C" fn each_object_wrapper(oid: *GitOid, cb: |*GitOid| -> u8) -> u8{
+extern "C" fn each_object_wrapper(oid: *GitOid, cb: |*GitOid| -> u8) -> u8 {
     return cb(oid);
 }
 
@@ -64,6 +64,4 @@ extern {
     fn git_repository_path(repo: *mut c_void) -> *c_char;
     fn git_repository_odb(odb: **mut c_void, repo: *mut c_void) -> c_int;
     fn git_odb_foreach(repo: *mut c_void, cb: extern "C" fn(*GitOid, |*GitOid| -> u8) -> u8, data: *|*GitOid| -> u8) -> c_int;
-}
-
 }
