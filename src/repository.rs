@@ -1,8 +1,10 @@
 use std::libc::{c_void,c_char,c_int};
 use std::mem;
 use std::c_str::CString;
+use oid::GitOid;
 use odb::GitOdb;
 
+pub mod oid;
 pub mod odb;
 
 struct Repository {
@@ -42,6 +44,17 @@ impl Repository {
             return None;
         }
     }
+
+    fn each_object(&self, cb: |*GitOid| -> u8) {
+        unsafe {
+            let odb = self.odb().unwrap();
+            let err = git_odb_foreach(odb.odb, each_object_wrapper, &cb);
+        }
+    }
+}
+
+extern "C" fn each_object_wrapper(oid: *GitOid, cb: |*GitOid| -> u8) -> u8{
+    return cb(oid);
 }
 
 #[link(name="git2")]
@@ -50,6 +63,7 @@ extern {
     // TODO This pointer is passed in effectively as const
     fn git_repository_path(repo: *mut c_void) -> *c_char;
     fn git_repository_odb(odb: **mut c_void, repo: *mut c_void) -> c_int;
+    fn git_odb_foreach(repo: *mut c_void, cb: extern "C" fn(*GitOid, |*GitOid| -> u8) -> u8, data: *|*GitOid| -> u8) -> c_int;
 }
 
 }
