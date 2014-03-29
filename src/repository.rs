@@ -21,14 +21,13 @@ impl Repository {
     }
 
     fn open(path: &str) -> Option<Repository> {
-        unsafe {
-            let mut repo: Repository = mem::init();
-            let err = git_repository_open(&repo.repo, path);
-            if (err == 0) {
-                return Some(repo);
-            } else {
-                return None;
-            }
+        let mut repo: Repository = unsafe { mem::init() };
+        let err = unsafe { git_repository_open(&repo.repo, path) };
+
+        if (err == 0) {
+            return Some(repo);
+        } else {
+            return None;
         }
     }
 }
