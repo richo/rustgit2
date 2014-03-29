@@ -1,9 +1,6 @@
 use std::libc::{c_void,c_char};
-use types::{GitCache,GitAttrCache,GIT_CVAR_CACHE_MAX};
 use std::mem;
 use std::c_str::CString;
-
-pub mod types;
 
 struct Repository {
     repo: *mut c_void,
