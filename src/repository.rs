@@ -53,6 +53,12 @@ impl Repository {
     }
 }
 
+impl Drop for Repository {
+    fn drop(&mut self) {
+        unsafe { std::libc::free(self.repo) };
+    }
+}
+
 extern "C" fn each_object_wrapper(oid: *GitOid, cb: |*GitOid| -> u8) -> u8 {
     return cb(oid);
 }
