@@ -52,9 +52,6 @@ impl Drop for Repository {
     }
 }
 
-extern "C" fn each_object_wrapper(oid: *GitOid, cb: |*GitOid| -> u8) -> u8 {
-    return cb(oid);
-}
 
 #[link(name="git2")]
 extern {
