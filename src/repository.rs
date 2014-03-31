@@ -44,13 +44,6 @@ impl Repository {
             return None;
         }
     }
-
-    fn each_object(&self, cb: |*GitOid| -> u8) {
-        unsafe {
-            let odb = self.odb().unwrap();
-            let err = git_odb_foreach(odb.odb, each_object_wrapper, &cb);
-        }
-    }
 }
 
 impl Drop for Repository {
@@ -69,5 +62,4 @@ extern {
     // TODO This pointer is passed in effectively as const
     fn git_repository_path(repo: *mut c_void) -> *c_char;
     fn git_repository_odb(odb: **mut c_void, repo: *mut c_void) -> c_int;
-    fn git_odb_foreach(repo: *mut c_void, cb: extern "C" fn(*GitOid, |*GitOid| -> u8) -> u8, data: *|*GitOid| -> u8) -> c_int;
 }
