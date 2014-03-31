@@ -22,6 +22,17 @@ impl GitOdb {
             println!("Error: {}", err);
         }
     }
+
+    fn open(path: &str) -> Option<GitOdb> {
+        let odb: GitOdb = unsafe { mem::init() };
+        let err = unsafe { git_odb_open(&odb.odb, path) };
+
+        if err == 0 {
+            return Some(odb);
+        } else {
+            return None;
+        }
+    }
 }
 
 extern "C" fn each_object_wrapper(oid: *GitOid, cb: |*GitOid| -> u8) -> u8 {
@@ -32,4 +43,5 @@ extern "C" fn each_object_wrapper(oid: *GitOid, cb: |*GitOid| -> u8) -> u8 {
 #[link(name="git2")]
 extern {
     fn git_odb_foreach(repo: *mut c_void, cb: extern "C" fn(*GitOid, |*GitOid| -> u8) -> u8, data: *|*GitOid| -> u8) -> c_int;
+    fn git_odb_open(odb: **mut c_void, dir: &str) -> u8;
 }
